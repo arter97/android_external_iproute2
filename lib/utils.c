@@ -600,6 +600,7 @@ static int __get_addr_1(inet_prefix *addr, const char *name, int family)
 		return 0;
 	}
 
+#ifndef ANDROID
 	if (family == AF_DECnet) {
 		struct dn_naddr dna;
 
@@ -611,6 +612,7 @@ static int __get_addr_1(inet_prefix *addr, const char *name, int family)
 		addr->bitlen = -1;
 		return 0;
 	}
+#endif
 
 	if (family == AF_MPLS) {
 		unsigned int maxlabels;
@@ -998,6 +1000,7 @@ const char *rt_addr_n2a_r(int af, int len,
 	case AF_INET:
 	case AF_INET6:
 		return inet_ntop(af, addr, buf, buflen);
+#ifndef ANDROID
 	case AF_MPLS:
 		return mpls_ntop(af, addr, buf, buflen);
 	case AF_IPX:
@@ -1009,6 +1012,7 @@ const char *rt_addr_n2a_r(int af, int len,
 		memcpy(dna.a_addr, addr, 2);
 		return dnet_ntop(af, &dna, buf, buflen);
 	}
+#endif
 	case AF_PACKET:
 		return ll_addr_n2a(addr, len, ARPHRD_VOID, buf, buflen);
 	case AF_BRIDGE:

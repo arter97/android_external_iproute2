@@ -170,7 +170,9 @@ static int batch(const char *name)
 int main(int argc, char **argv)
 {
 	char *basename;
+#ifndef ANDROID
 	char *batch_file = NULL;
+#endif
 	int color = 0;
 
 	/* to run vrf exec without root, capabilities might be set, drop them
@@ -257,12 +259,14 @@ int main(int argc, char **argv)
 			exit(0);
 		} else if (matches(opt, "-force") == 0) {
 			++force;
+#ifndef ANDROID
 		} else if (matches(opt, "-batch") == 0) {
 			argc--;
 			argv++;
 			if (argc <= 1)
 				usage();
 			batch_file = argv[1];
+#endif
 		} else if (matches(opt, "-brief") == 0) {
 			++brief;
 		} else if (matches(opt, "-json") == 0) {
@@ -304,8 +308,10 @@ int main(int argc, char **argv)
 
 	check_enable_color(color, json);
 
+#ifndef ANDROID
 	if (batch_file)
 		return batch(batch_file);
+#endif
 
 	if (rtnl_open(&rth, 0) < 0)
 		exit(1);
